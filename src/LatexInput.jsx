@@ -3,13 +3,14 @@ import 'mathquill/build/mathquill.css';
 import 'mathquill/build/mathquill.js';
 import TextField from '@material-ui/core/TextField';
 import { addField, FieldTitle } from 'ra-core';
-
+const INIT_INPUT_HEIGHT = 48;
+const INIT_LATEX_HEIGHT = 22;
 class Latex extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             latexValue: props.initValue || '',
-            latexHeight: 26 + 22
+            latexHeight: INIT_INPUT_HEIGHT
         };
     }
     componentDidMount() {
@@ -21,7 +22,7 @@ class Latex extends React.Component {
                 handlers: {
                     edit: () => {
                         const latexValue = this.mathField.latex();
-                        const latexHeight = 26 + this.mathField.__controller.container.context.scrollHeight;
+                        const latexHeight = INIT_INPUT_HEIGHT - INIT_LATEX_HEIGHT + this.mathField.__controller.container.context.scrollHeight;
                         this.setState({
                             latexValue,
                             latexHeight
