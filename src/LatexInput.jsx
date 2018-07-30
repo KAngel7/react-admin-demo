@@ -3,14 +3,13 @@ import 'mathquill/build/mathquill.css';
 import 'mathquill/build/mathquill.js';
 import TextField from '@material-ui/core/TextField';
 import { addField, FieldTitle } from 'ra-core';
-const INIT_INPUT_HEIGHT = 48;
-const INIT_LATEX_HEIGHT = 22;
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 class Latex extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            latexValue: props.initValue || '',
-            latexHeight: INIT_INPUT_HEIGHT
+            latexValue: props.initValue || ''
         };
     }
     componentDidMount() {
@@ -21,11 +20,10 @@ class Latex extends React.Component {
                 spaceBehavesLikeTab: true,
                 handlers: {
                     edit: () => {
+                        console.log('aa')
                         const latexValue = this.mathField.latex();
-                        const latexHeight = INIT_INPUT_HEIGHT - INIT_LATEX_HEIGHT + this.mathField.__controller.container.context.scrollHeight;
                         this.setState({
-                            latexValue,
-                            latexHeight
+                            latexValue
                         }, () => {
                             this.refs.in.focus();
                         })
@@ -33,7 +31,8 @@ class Latex extends React.Component {
                             this.props.onChange(latexValue);
                         }
                         this.mathField.focus()
-                    }
+                    },
+                    enter: (mathField) => { console.log('aaa') }
                 }
             });
             if (this.props.initValue) {
@@ -63,11 +62,26 @@ class Latex extends React.Component {
                 <span style={{ opacity: 0, position: 'absolute', zIndex: -9999 }}>
                     <input type="text" {...input} value={this.state.latexValue} ref="in" />
                 </span>
-                <TextField
+                <FormControl className={'classes.margin'}>
+                    <InputLabel
+                        FormLabelClasses={{
+                            root: 'classes.cssLabel',
+                            focused: 'classes.cssFocused',
+                        }}
+                        focused
+                        shrink
+                        htmlFor="custom-css-input"
+                    >
+                        {label}
+                    </InputLabel>
+                    <div id="math-field" style={{ marginTop: 30 }} />
+                </FormControl>
+
+                {/* <TextField
                     {...input}
                     margin="normal"
-                    inputProps={{style: {opacity: 0, height: this.state.latexHeight}}}
-                    onFocus={() => {}}
+                    inputProps={{ style: { opacity: 0, height: this.state.latexHeight } }}
+                    onFocus={() => { }}
                     label={
                         <FieldTitle
                             label={label}
@@ -79,9 +93,8 @@ class Latex extends React.Component {
                     error={!!(touched && error)}
                     helperText={touched && error}
                     className={className}
-                    style={{height: this.state.latexHeight}}
-                />
-                <span id="math-field" style={{ position: 'absolute', left: 0, bottom:10, minWidth: 300 }} />
+                    style={{ height: this.state.latexHeight }}
+                /> */}
                 {/* <div>
                     <button onClick={() => this.input("\\sqrt")}>√</button>
                     <button onClick={() => this.input("\\sin")}>sin</button>
