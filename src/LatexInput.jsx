@@ -14,12 +14,13 @@ class Latex extends React.Component {
             latexFocus: false,
             toolBox: false
         };
+        this.initFocus = true;
     }
     componentDidMount() {
         setTimeout(() => {
-            var mathFieldSpan = document.getElementById('math-field');
+            this.mathFieldSpan = document.getElementById('math-field');
             var MQ = window.MathQuill.getInterface(2);
-            this.mathField = MQ.MathField(mathFieldSpan, {
+            this.mathField = MQ.MathField(this.mathFieldSpan, {
                 spaceBehavesLikeTab: true,
                 handlers: {
                     edit: (mathField) => {
@@ -51,6 +52,13 @@ class Latex extends React.Component {
             const latexFocus = !this.mathField.__controller.blurred;
             if (this.state.latexFocus !== latexFocus) {
                 this.setState({ latexFocus });
+            }
+            if (latexFocus && this.initFocus) {
+                var ev = document.createEvent('Event');
+                ev.initEvent('keypress');
+                ev.which = ev.keyCode = 13;
+                this.mathFieldSpan.dispatchEvent(ev);
+                this.initFocus = false;
             }
         }
     }
@@ -91,7 +99,7 @@ class Latex extends React.Component {
                     <div id="math-field" />
                     <Button onClick={() => this.setState({ toolBox: !this.state.toolBox })}>{this.state.toolBox ? 'Hide toolbox' : 'Show toolBox'}</Button>
                 </FormControl>
-                <div style={{display: this.state.toolBox ? 'block' : 'none'}}>
+                <div style={{ display: this.state.toolBox ? 'block' : 'none' }}>
                     <Button onClick={() => this.input("\\sqrt")}>√</Button>
                     <Button onClick={() => this.input("\\sin")}>sin</Button>
                     <Button onClick={() => this.input("\\cos")}>cos</Button>
