@@ -44,7 +44,7 @@ class Latex extends React.Component {
         });
     }
     componentWillUnmount() {
-        window.removeEventListener(this.mathFieldFocusListenner);
+        window.removeEventListener('click', this.mathFieldFocusListenner);
     }
     setLatexFocus() {
         if (this.mathField) {
@@ -52,6 +52,7 @@ class Latex extends React.Component {
             if (this.state.latexFocus !== latexFocus) {
                 this.setState({ latexFocus });
             }
+            document.cr
         }
     }
     input = (str) => {
