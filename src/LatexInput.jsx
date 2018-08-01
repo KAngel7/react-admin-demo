@@ -52,7 +52,6 @@ class Latex extends React.Component {
             if (this.state.latexFocus !== latexFocus) {
                 this.setState({ latexFocus });
             }
-            document.cr
         }
     }
     input = (str) => {
