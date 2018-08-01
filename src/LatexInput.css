@@ -1,0 +1,13 @@
+.latex-input .mq-editable-field.mq-focused,
+.latex-input .mq-math-mode .mq-editable-field.mq-focused {
+  box-shadow: none;
+  border-color: none;
+  border-radius: none;
+}
+
+#math-field {
+    margin-top: 22px;
+    min-width: 250px;
+    border: none;
+    border-bottom: 1px solid;
+}

@@ -38,8 +38,8 @@ export const PostCreate = (props) => (
     <Create title="Create a Post" {...props}>
         <SimpleForm>
             <LatexInput 
-                source="latex"
-                label="latex"
+                source="Latex"
+                label="Latex"
             />
             <TextInput source="title" />
             <TextInput source="teaser" options={{ multiLine: true }} />

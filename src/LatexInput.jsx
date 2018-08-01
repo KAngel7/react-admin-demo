@@ -1,15 +1,18 @@
 import React from 'react';
 import 'mathquill/build/mathquill.css';
 import 'mathquill/build/mathquill.js';
-import TextField from '@material-ui/core/TextField';
-import { addField, FieldTitle } from 'ra-core';
+import './LatexInput.css';
+import Button from '@material-ui/core/Button';
+import { addField } from 'ra-core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 class Latex extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            latexValue: props.initValue || ''
+            latexValue: props.initValue || '',
+            latexFocus: false,
+            toolBox: false
         };
     }
     componentDidMount() {
@@ -19,9 +22,8 @@ class Latex extends React.Component {
             this.mathField = MQ.MathField(mathFieldSpan, {
                 spaceBehavesLikeTab: true,
                 handlers: {
-                    edit: () => {
-                        console.log('aa')
-                        const latexValue = this.mathField.latex();
+                    edit: (mathField) => {
+                        const latexValue = mathField.latex();
                         this.setState({
                             latexValue
                         }, () => {
@@ -30,15 +32,27 @@ class Latex extends React.Component {
                         if (this.props.onChange) {
                             this.props.onChange(latexValue);
                         }
-                        this.mathField.focus()
-                    },
-                    enter: (mathField) => { console.log('aaa') }
+                        mathField.focus()
+                    }
                 }
             });
+            this.mathFieldFocusListenner = this.setLatexFocus.bind(this);
+            window.addEventListener('click', this.mathFieldFocusListenner);
             if (this.props.initValue) {
                 this.mathField.write(this.props.initValue);
             }
         });
+    }
+    componentWillUnmount() {
+        window.removeEventListener(this.mathFieldFocusListenner);
+    }
+    setLatexFocus() {
+        if (this.mathField) {
+            const latexFocus = !this.mathField.__controller.blurred;
+            if (this.state.latexFocus !== latexFocus) {
+                this.setState({ latexFocus });
+            }
+        }
     }
     input = (str) => {
         this.mathField.cmd(str);
@@ -58,7 +72,7 @@ class Latex extends React.Component {
             isRequired,
         } = this.props;
         return (
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} className="latex-input">
                 <span style={{ opacity: 0, position: 'absolute', zIndex: -9999 }}>
                     <input type="text" {...input} value={this.state.latexValue} ref="in" />
                 </span>
@@ -68,39 +82,21 @@ class Latex extends React.Component {
                             root: 'classes.cssLabel',
                             focused: 'classes.cssFocused',
                         }}
-                        focused
-                        shrink
+                        focused={this.state.latexFocus}
+                        shrink={!!this.state.latexValue || this.state.latexFocus}
                         htmlFor="custom-css-input"
                     >
                         {label}
                     </InputLabel>
-                    <div id="math-field" style={{ marginTop: 30 }} />
+                    <div id="math-field" />
+                    <Button onClick={() => this.setState({ toolBox: !this.state.toolBox })}>{this.state.toolBox ? 'Hide toolbox' : 'Show toolBox'}</Button>
                 </FormControl>
-
-                {/* <TextField
-                    {...input}
-                    margin="normal"
-                    inputProps={{ style: { opacity: 0, height: this.state.latexHeight } }}
-                    onFocus={() => { }}
-                    label={
-                        <FieldTitle
-                            label={label}
-                            source={source}
-                            resource={resource}
-                            isRequired={isRequired}
-                        />
-                    }
-                    error={!!(touched && error)}
-                    helperText={touched && error}
-                    className={className}
-                    style={{ height: this.state.latexHeight }}
-                /> */}
-                {/* <div>
-                    <button onClick={() => this.input("\\sqrt")}>√</button>
-                    <button onClick={() => this.input("\\sin")}>sin</button>
-                    <button onClick={() => this.input("\\cos")}>cos</button>
-                    <button onClick={() => this.input("\\tan")}>tan</button>
-                </div> */}
+                <div style={{display: this.state.toolBox ? 'block' : 'none'}}>
+                    <Button onClick={() => this.input("\\sqrt")}>√</Button>
+                    <Button onClick={() => this.input("\\sin")}>sin</Button>
+                    <Button onClick={() => this.input("\\cos")}>cos</Button>
+                    <Button onClick={() => this.input("\\tan")}>tan</Button>
+                </div>
             </div>
         );
     }
